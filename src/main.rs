@@ -1,17 +1,16 @@
+use std::error::Error;
+
 use axum::{routing::post, Json, Router};
 use kube::core::conversion::{ConversionRequest, ConversionResponse, ConversionReview};
 use stackable_webhook::{Options, WebhookServer};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn Error>> {
     let router = Router::new().route("/", post(convert));
 
-    let options = Options::builder()
-        .disable_redirect()
-        .socket_addr(([0, 0, 0, 0], 8443))
-        .build();
+    let options = Options::builder().bind_address([0, 0, 0, 0], 8443).build();
     let server = WebhookServer::new(router, options);
-    server.run().await
+    Ok(server.run().await?)
 }
 
 async fn convert(Json(review): Json<ConversionReview>) -> Json<ConversionReview> {
