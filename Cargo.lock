@@ -731,6 +731,7 @@ dependencies = [
  "stackable-telemetry",
  "stackable-webhook",
  "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -2821,7 +2822,7 @@ dependencies = [
 [[package]]
 name = "stackable-telemetry"
 version = "0.1.0"
-source = "git+https://github.com/stackabletech//operator-rs.git?branch=feat/otel-crate#71c0331dcf0cc056e00784d3885d637d4335568a"
+source = "git+https://github.com/stackabletech//operator-rs.git?branch=feat/otel-crate#ec1b9091efa20271e4bf1dc53228e239f518adb4"
 dependencies = [
  "axum 0.7.5",
  "futures-util",
