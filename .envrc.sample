@@ -1,0 +1,2 @@
+# auto load shell.nix via direnv
+use nix
