@@ -21,6 +21,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(server.run().await?)
 }
 
+#[tracing::instrument(target = "convert", skip(review))]
 async fn convert(Json(review): Json<ConversionReview>) -> Json<ConversionReview> {
     println!("{}", serde_json::to_string(&review).unwrap());
     let request = ConversionRequest::from_review(review).unwrap();
