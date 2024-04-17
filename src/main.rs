@@ -1,6 +1,7 @@
 use std::error::Error;
 
 use axum::{
+    extract::Path,
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
@@ -20,6 +21,7 @@ pub(crate) struct Ping {
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct Pong {
     pub pong: String,
+    pub name: String,
 }
 
 #[tokio::main]
@@ -34,8 +36,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let router = Router::new()
         .route("/", post(convert))
         .route("/", get(index))
-        .route("/health", get(health))
-        .route("/ping", post(ping));
+        .route("/ping/:name", post(ping));
 
     let options = Options::builder().bind_address([0, 0, 0, 0], 8443).build();
     let server = WebhookServer::new(router, options);
@@ -53,8 +54,12 @@ async fn convert(Json(review): Json<ConversionReview>) -> Json<ConversionReview>
 }
 
 #[tracing::instrument(target = "ping")]
-async fn ping(Json(ping): Json<Ping>) -> Json<Pong> {
-    let pong = Pong { pong: ping.ping };
+async fn ping(Path(name): Path<String>, Json(ping): Json<Ping>) -> Json<Pong> {
+    let pong = Pong {
+        pong: ping.ping,
+        name,
+    };
+
     tracing::info!("ping-pong");
     Json(pong)
 }
@@ -62,9 +67,4 @@ async fn ping(Json(ping): Json<Ping>) -> Json<Pong> {
 #[tracing::instrument(name = "index")]
 async fn index() -> impl IntoResponse {
     "Hello"
-}
-
-#[tracing::instrument(name = "health")]
-async fn health() -> impl IntoResponse {
-    "healthy"
 }
