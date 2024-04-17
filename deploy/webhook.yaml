@@ -1,0 +1,52 @@
+---
+# Main deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dummy-webhook
+  namespace: default
+  labels:
+    app: dummy-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dummy-webhook
+  template:
+    metadata:
+      annotations:
+        sidecar.opentelemetry.io/inject: "otel-collector-grpc"
+      labels:
+        app: dummy-webhook
+    spec:
+      containers:
+      - name: dummy-webhook
+        image: dummy-webhook:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        ports:
+        - name: https
+          containerPort: 8443
+          protocol: TCP
+        env:
+          # TODO (@NickLarsenNZ): add Otel vars, and rename RUST_LOG var
+          - name: RUST_LOG
+            value: "trace" #,tokio_util=info,h2=info"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: https
+          initialDelaySeconds: 5
+          periodSeconds: 5

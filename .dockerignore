@@ -1,0 +1,7 @@
+# this is important to stop Tilt rebuilding the whole image when unrelated files
+# change.
+**
+!./rust-toolchain.toml
+!./src
+!./Cargo.*
+!./LICENSE

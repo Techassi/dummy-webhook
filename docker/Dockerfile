@@ -23,8 +23,8 @@ RUN microdnf install -y yum \
   && yum clean all \
   && microdnf clean all
 
-# Install kerberos client libraries
-RUN microdnf install -y krb5-libs libkadm5 && microdnf clean all
+# # Install kerberos client libraries
+# RUN microdnf install -y krb5-libs libkadm5 && microdnf clean all
 
 COPY LICENSE /licenses/LICENSE
 

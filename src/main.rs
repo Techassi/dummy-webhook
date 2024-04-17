@@ -27,12 +27,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _trace_guard = Tracing::builder()
         .service_name("dummy-webhook")
         .with_console_output(LevelFilter::TRACE)
+        .with_otlp_trace_exporter(LevelFilter::TRACE)
         .build()
         .init()?;
 
     let router = Router::new()
         .route("/", post(convert))
         .route("/", get(index))
+        .route("/health", get(health))
         .route("/ping", post(ping));
 
     let options = Options::builder().bind_address([0, 0, 0, 0], 8443).build();
@@ -57,6 +59,12 @@ async fn ping(Json(ping): Json<Ping>) -> Json<Pong> {
     Json(pong)
 }
 
+#[tracing::instrument(name = "index")]
 async fn index() -> impl IntoResponse {
-    "hello"
+    "Hello"
+}
+
+#[tracing::instrument(name = "health")]
+async fn health() -> impl IntoResponse {
+    "healthy"
 }
