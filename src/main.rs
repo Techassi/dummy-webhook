@@ -28,8 +28,9 @@ pub(crate) struct Pong {
 async fn main() -> Result<(), Box<dyn Error>> {
     let _trace_guard = Tracing::builder()
         .service_name("dummy-webhook")
-        .with_console_output(LevelFilter::TRACE)
-        .with_otlp_trace_exporter(LevelFilter::TRACE)
+        .with_console_output("CONSOLE_LOG_LEVEL", LevelFilter::INFO)
+        .with_otlp_trace_exporter("OTLP_TRACE_LEVEL", LevelFilter::TRACE)
+        // .with_otlp_log_exporter("OTLP_LOG_LEVEL", LevelFilter::DEBUG)
         .build()
         .init()?;
 
