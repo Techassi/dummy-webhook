@@ -40,7 +40,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let options = Options::builder().bind_address([0, 0, 0, 0], 8443).build();
     let server = WebhookServer::new(router, options);
-    Ok(server.run().await?)
+
+    server.run().await?;
+    tracing::info!("shutting down");
+
+    Ok(())
 }
 
 #[tracing::instrument(target = "convert", skip(review))]
