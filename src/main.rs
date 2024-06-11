@@ -26,6 +26,10 @@ pub(crate) struct Pong {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // std::env::set_var("OTEL_EXPORTER_OTLP_ENDPOINT", "http://172.18.0.2:30356");
+    // TODO (@NickLarsenNZ): Fix gzip compression
+    // std::env::set_var("OTEL_EXPORTER_OTLP_COMPRESSION", "gzip");
+
     let _trace_guard = Tracing::builder()
         .service_name("dummy-webhook")
         .with_console_output("CONSOLE_LOG_LEVEL", LevelFilter::INFO)
